@@ -1265,6 +1265,15 @@ deal_with_game(Move *move_list, unsigned long start_line, unsigned long end_line
             else {
                 /* Not wanted. */
             }
+
+            if(current_game.moves == NULL &&
+                    current_game.tags[RESULT_TAG] == NULL) {
+                    fprintf(GlobalState.logfile, "Game with no moves and no result.\n");
+                    report_details(GlobalState.logfile);
+                    if(output_the_game) {
+                        current_game.tags[RESULT_TAG] = copy_string("*");
+                    }
+            }
             if(output_the_game) {
                 /* This game is to be kept and output. */
                 FILE *outputfile = select_output_file(&GlobalState,
