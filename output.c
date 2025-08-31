@@ -1728,10 +1728,11 @@ static unsigned count_move_list_ply(Move *move_list, Boolean count_variations)
 
 /*
  * Count how many plies in the game in total.
- * Include variations if count_variations.
+ * Don't include variations.
  */
 void add_plycount(const Game *game)
 {
+    /* Don't include variations. */
     unsigned count = count_move_list_ply(game->moves, FALSE);
     char formatted_count[FORMATTED_NUMBER_SIZE];
     sprintf(formatted_count, "%u", count);
