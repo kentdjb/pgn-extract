@@ -2171,6 +2171,18 @@ rewrite_moves(Game *game, Board *board, Move *moves)
     Move *move_details = moves;
     int plies_to_drop = GlobalState.drop_ply_number;
 
+    /* See if the prefix comment should be replaced by a FEN comment. */
+    if (game != NULL && game->prefix_comment != NULL &&
+              GlobalState.FEN_comment_pattern != NULL) {
+        StringList *comment_to_replace =
+            find_matching_comment(GlobalState.FEN_comment_pattern,
+                                  game->prefix_comment);
+        if(comment_to_replace != NULL) {
+            (void) free((void *) comment_to_replace->str);
+            comment_to_replace->str = get_FEN_string(board);
+        }
+    }
+
     while (game_ok && (move_details != NULL)) {
         if (*(move_details->move) != '\0') {
             /* See if there are any variations associated with this move. */
