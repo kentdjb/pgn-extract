@@ -1178,8 +1178,10 @@ exclude_moves(Piece piece, Colour colour, Col from_col, Rank from_rank,
  * En-passant information in the original move text is not currently used
  * to disambiguate pawn moves.  E.g. with Black pawns on c4 and c5 after
  * White move 1. d4 a reply 1... cdep will be rejected as ambiguous.
+ * Return 0 if no pawn move is recognised, 1 if a single pawn move is possible,
+ * or -1 if multiple pawn moves are possible.l
  */
-static Boolean
+static int
 pawn_move(Move *move_details, Colour colour, Board *board)
 {
     Col from_col = move_details->from_col;
@@ -1188,7 +1190,8 @@ pawn_move(Move *move_details, Colour colour, Board *board)
     Rank to_rank = move_details->to_rank;
     /* Find the basic set of moves that match the move_details criteria. */
     MovePair *move_list;
-    Boolean Ok = TRUE;
+    /* -1, 0 or 1 (see comment above). */
+    int result;
 
     /* Make sure that the col values are consistent with a pawn move. */
     if ((from_col != '\0') && (to_col != '\0') &&
@@ -1197,11 +1200,11 @@ pawn_move(Move *move_details, Colour colour, Board *board)
             /* Capture. */
             (from_col != (to_col + 1)) && (from_col != (to_col - 1))) {
         /* Inconsistent. */
-        Ok = FALSE;
+        result = 0;
     }
     else if ((move_list = find_pawn_moves(from_col, from_rank, to_col, to_rank,
             colour, board)) == NULL) {
-        Ok = FALSE;
+        result = 0;
     }
     else {
         /* Exclude any moves that leave the king in check, or are disambiguate
@@ -1218,19 +1221,20 @@ pawn_move(Move *move_details, Colour colour, Board *board)
                 move_details->from_rank = move_list->from_rank;
                 move_details->to_col = move_list->to_col;
                 move_details->to_rank = move_list->to_rank;
+                result = 1;
             }
             else {
                 /* Ambiguous. */
-                Ok = FALSE;
+                result = -1;
             }
             free_move_pair_list(move_list);
         }
         else {
             /* Excluded. */
-            Ok = FALSE;
+            result = 0;
         }
     }
-    return Ok;
+    return result;
 }
 
 /* Make a pawn move that involves an explicit promotion to promoted_piece. */
@@ -1891,9 +1895,9 @@ determine_move_details(Colour colour, Move *move_details, Board *board)
             }
             if ((class == PAWN_MOVE) || (class == ENPASSANT_PAWN_MOVE)) {
                 /* Check out the details and confirm the move's class. */
-                Ok = pawn_move(move_details, colour, board);
-                /* See if we are dealing with and En Passant move. */
-                if (Ok) {
+                int pawn_move_status = pawn_move(move_details, colour, board);
+                /* See if we are dealing with an en passant move. */
+                if (pawn_move_status == 1) {
                     if ((board->EnPassant) &&
                             (board->ep_rank == move_details->to_rank) &&
                             (board->ep_col == move_details->to_col)) {
@@ -1903,7 +1907,17 @@ determine_move_details(Colour colour, Move *move_details, Board *board)
                         /* Just in case the original designation was incorrect. */
                         move_details->class = class = PAWN_MOVE;
                     }
+                    Ok = TRUE;
                     move_handled = TRUE;
+                }
+                else if(pawn_move_status == -1) {
+                    /* Ambiguous. */
+                    move_handled = TRUE;
+                    Ok = FALSE;
+                }
+                else {
+                    /* No pawn move. */
+                    Ok = FALSE;
                 }
             }
             else if (class == PAWN_MOVE_WITH_PROMOTION) {
@@ -1914,7 +1928,7 @@ determine_move_details(Colour colour, Move *move_details, Board *board)
             else {
                 /* Shouldn't get here. */
             }
-            if (!move_handled) {
+            if (! move_handled) {
                 /* We failed to find the move, for some reason. */
                 /* See if it might be a Bishop move with a lower case 'b'. */
                 if (move_details->move[0] == 'b') {
@@ -1944,7 +1958,7 @@ determine_move_details(Colour colour, Move *move_details, Board *board)
                 }
             }
         }
-        if (!move_handled) {
+        if (! move_handled) {
             /* Pick up any moves not handled as pawn moves.
              * This includes algebraic moves that were originally assumed to
              * be pawn moves.
