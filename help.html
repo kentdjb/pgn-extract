@@ -178,7 +178,8 @@ the binary working, there is <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract
 	<li><a href="#xroster">Don't output tags not included with the -R option (--xroster)</a>
         <li><a href="#addfencastling">Add potentially missing castling rights to FEN tags (--addfencastling)</a>
 	<li><a href="#addhashcode">Add a tag containing a hashcode for the game (--addhashcode)</a>
-	<li><a href="#fixresulttags">Correct Result tags that conflict with the game outcome (checkmate or stalemate) (--fixresulttags)</a>
+	<li><a href="#fixresulttags">Correct Result tags that conflict with the game outcome (checkmate, stalemate,
+        insufficient material) (--fixresulttags)</a>
         <li><a href="#fixtagstrings">Attempt to correct tag strings that are not properly terminated (--fixtagstrings)</a>
 	<li><a href="#totalplycount">Add a tag containing the total ply count (--totalplycount)</a>
         <li><a href="#nobadresults">Suppress games with inconsistent result tags (--nobadresults)</a>
@@ -352,7 +353,7 @@ of this page before attempting to use pgn-extract in earnest.
       <li>--fenpatterni pattern - match games containing the given FEN pattern for either side.
       <li>--fifty - only output games that include fifty moves with no capture or pawn move.
       <li>--firstgame N - start matching from game number N (default 1).
-      <li>--fixresulttags - correct Result tags that conflict with the game outcome (checkmate or stalemate).
+      <li>--fixresulttags - correct Result tags that conflict with the game outcome (checkmate, stalemate, insufficient material).
       <li>--fixtagstrings - attempt to correct tag strings that are not properly terminated.
       <li>--fuzzydepth plies - positional duplicates match.
       <li>--gamelimit N - only process up to and including game number N.
@@ -1141,7 +1142,7 @@ move information is ignored.
 description from a game score.
 
 <p id="FENPattern-t">There is a variation on use of a FEN with -t flag
-and <a href="#FEN-T">-Tf flag</a>..
+and <a href="#FEN-T">-Tf flag</a>.
 The pseudo tag FENPattern takes a FEN-like description of a board
 containing meta characters that allow a fuzzy board match.
 In addition to the standard FEN characters having their usual
@@ -2289,7 +2290,8 @@ interpret the initial positions of Kings and Rooks to infer the rights.
 NB: This is not implemented for Chess 960 positions.
 
 <h2 id="fixresulttags">Correct Result tags that conflict with the game outcome or terminating result (--fixresulttags)</h2>
-<p>Where the existing Result tag clearly conflicts with a game's outcome - i.e., checkmate or stalemate - replace
+<p>Where the existing Result tag clearly conflicts with a game's outcome - i.e., checkmate, stalemate, insufficient
+material - replace
 the value in the Result tag to match the game outcome and don't report the inconsistency.
 <p>Inconsistencies between the result tag and terminating result are resolved in favour of
     the terminating result when either is "*".
@@ -2510,7 +2512,7 @@ GNU General Public License for more details.
 <p>
 <p>David J. Barnes may be contacted as
 <a href="mailto:d.j.barnes @ kent.ac.uk">d.j.barnes @ kent.ac.uk</a>,
-<a href="http://twitter.com/kentdjb/">@kentdjb</a> on Twitter,
+<a href="http://x.com/kentdjb/">@kentdjb</a> on X,
 or via
 <a href="https://www.cs.kent.ac.uk/people/staff/djb/">https://www.cs.kent.ac.uk/people/staff/djb/</a>
 

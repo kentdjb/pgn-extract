@@ -1124,14 +1124,26 @@ play_moves(Game *game_details, Board *board, Move *moves, unsigned max_depth,
                                     }
                                 }
                             }
-                            else if (is_stalemate(board, NULL)) {
-                                if (strncmp(result, "1/2", 3) != 0) {
+                            else if (strncmp(result, "1/2", 3) != 0) {
+                                if (is_stalemate(board, NULL)) {
                                     if (GlobalState.fix_result_tags) {
                                         corrected_result = "1/2-1/2";
                                     }
                                     else {
                                         fprintf(GlobalState.logfile,
                                                 "Warning: Result of %s is inconsistent with stalemate in\n",
+                                                result);
+                                        report_details(GlobalState.logfile);
+                                        print_error_context(GlobalState.logfile);
+                                    }
+                                }
+                                else if(insufficient_material(board)) {
+                                    if (GlobalState.fix_result_tags) {
+                                        corrected_result = "1/2-1/2";
+                                    }
+                                    else {
+                                        fprintf(GlobalState.logfile,
+                                                "Warning: Result of %s is inconsistent with insufficient material in\n",
                                                 result);
                                         report_details(GlobalState.logfile);
                                         print_error_context(GlobalState.logfile);
