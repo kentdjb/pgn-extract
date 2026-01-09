@@ -756,7 +756,12 @@ print_move(FILE *outputfile, unsigned move_number, Boolean print_move_number,
                            (move_details->class == KINGSIDE_CASTLE ||
                             move_details->class == QUEENSIDE_CASTLE)) {
                             strcpy(algebraic, (char *) move_text);
-                            ind += strlen((char *) algebraic);
+                            ind = strlen((char *) algebraic);
+                            /* Remove any check/mate symbol. */
+                            if(algebraic[ind-1] == '+' || algebraic[ind-1] == '#') {
+                                algebraic[ind-1] = '\0';
+                                ind--;
+                            }
                         }
                         else {
                             /* Prefix with a piece name if ELALG. */
