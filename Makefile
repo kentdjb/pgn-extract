@@ -1,7 +1,7 @@
 # Make file for the pgn-extract program.
 #
 #  This file is part of pgn-extract: a Portable Game Notation (PGN) extractor.
-#  Copyright (C) 1994-2025 David J. Barnes
+#  Copyright (C) 1994-2026 David J. Barnes
 #
 #  pgn-extract is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

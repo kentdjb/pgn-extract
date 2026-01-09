@@ -1,6 +1,6 @@
 /*
  *  Program: pgn-extract: a Portable Game Notation (PGN) extractor.
- *  Copyright (C) 1994-2025 David Barnes
+ *  Copyright (C) 1994-2026 David Barnes
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 1, or (at your option)

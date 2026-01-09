@@ -1,6 +1,6 @@
 /*
  *  This file is part of pgn-extract: a Portable Game Notation (PGN) extractor.
- *  Copyright (C) 1994-2025 David J. Barnes
+ *  Copyright (C) 1994-2026 David J. Barnes
  *
  *  pgn-extract is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -288,7 +288,7 @@ usage_and_exit(void)
             "pgn-extract %s (%s): a Portable Game Notation (PGN) manipulator.\n",
             CURRENT_VERSION, __DATE__);
     fprintf(GlobalState.logfile,
-            "Copyright (C) 1994-2025 David J. Barnes (d.j.barnes@kent.ac.uk)\n");
+            "Copyright (C) 1994-2026 David J. Barnes (d.j.barnes@kent.ac.uk)\n");
     fprintf(GlobalState.logfile, "%s\n\n", URL);
     fprintf(GlobalState.logfile, "Usage: pgn-extract [arguments] [file.pgn ...]\n");
 
