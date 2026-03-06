@@ -33,6 +33,8 @@ typedef struct EcoLog {
      * the board when the line is played out.
      */
     unsigned half_moves;
+    /* Whose move in this position. */
+    Colour to_move;
     const char *ECO_tag;
     const char *Opening_tag;
     const char *Variation_tag;

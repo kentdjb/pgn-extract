@@ -82,7 +82,7 @@ dumpEcoTable(void)
  */
 static int
 eco_match_level(EcoLog *entry, HashCode current_hash_value,
-        HashCode cumulative_hash_value, unsigned half_moves_played)
+        HashCode cumulative_hash_value, unsigned half_moves_played, Colour to_move)
 {
     int level = 0;
     if (entry != NULL) {
@@ -91,6 +91,9 @@ eco_match_level(EcoLog *entry, HashCode current_hash_value,
             if (entry->cumulative_hash_value == cumulative_hash_value) {
                 level++;
                 if (entry->half_moves == half_moves_played) {
+                    level++;
+                }
+                if (entry->to_move == to_move) {
                     level++;
                 }
             }
@@ -105,6 +108,7 @@ eco_match_level(EcoLog *entry, HashCode current_hash_value,
 static int ECO_REQUIRED_HASH_VALUE = 1;
 static int ECO_HALF_MOVE_VALUE = 1;
 static int ECO_CUMULATIVE_HASH_VALUE = 0;
+static int ECO_TO_MOVE_VALUE = 1;
 
 /* Rate the quality of the given match.
  * Currently unused.
@@ -112,7 +116,8 @@ static int ECO_CUMULATIVE_HASH_VALUE = 0;
 static int eco_match_quality(EcoLog* entry,
         HashCode current_hash_value,
         HashCode cumulative_hash_value,
-        int half_moves_played)
+        int half_moves_played,
+        Colour to_move)
 {
     int quality = 0;
     if (entry->required_hash_value == current_hash_value) {
@@ -122,6 +127,9 @@ static int eco_match_quality(EcoLog* entry,
         }
         if (entry->cumulative_hash_value == cumulative_hash_value) {
             quality += ECO_CUMULATIVE_HASH_VALUE;
+        }
+        if (entry->to_move == to_move) {
+            quality += ECO_TO_MOVE_VALUE;
         }
     }
     return quality;
@@ -160,6 +168,7 @@ save_eco_details(const Game *game_details, const Board *final_position, unsigned
     for (entry = EcoTable[ix]; (entry != NULL) && can_save; entry = entry->next) {
         if ((entry->required_hash_value == game_details->final_hash_value) &&
                 (entry->half_moves == number_of_half_moves) &&
+                (entry->to_move == final_position->to_move) &&
                 (entry->cumulative_hash_value == game_details->cumulative_hash_value)) {
             const char *tag = entry->ECO_tag,
                     *opening = entry->Opening_tag,
@@ -205,6 +214,8 @@ save_eco_details(const Game *game_details, const Board *final_position, unsigned
          * check on matches.
          */
         entry->half_moves = number_of_half_moves;
+        entry->to_move = final_position->to_move;
+
         /* Check for a new greater depth. */
         if (number_of_half_moves + ECO_HALF_MOVE_LIMIT > maximum_half_moves) {
             maximum_half_moves = number_of_half_moves + ECO_HALF_MOVE_LIMIT;
@@ -278,11 +289,12 @@ eco_matches(const Board *board, HashCode cumulative_hash_value,
             if (entry->required_hash_value == current_hash_value) {
                 /* See if we have a full match. */
                 if (half_moves_played == entry->half_moves &&
+                        board->to_move == entry->to_move &&
                         entry->cumulative_hash_value == cumulative_hash_value) {
                     return entry;
                 }
                 else if ((half_moves_played - entry->half_moves) <=
-                        ECO_HALF_MOVE_LIMIT) {
+                        ECO_HALF_MOVE_LIMIT && board->to_move == entry->to_move) {
                     /* Retain this as a possible. */
                     possible = entry;
                 }
