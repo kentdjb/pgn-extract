@@ -166,22 +166,6 @@ void set_output_piece_characters(const char *letters)
     }
 }
 
-/* Return a fresh copy of the given string. */
-char *
-copy_string(const char *str)
-{
-    char *result;
-    if(str != NULL) {
-        size_t len = strlen(str);
-
-        result = (char *) malloc_or_die(len + 1);
-        strcpy(result, str);
-    }
-    else {
-        result = NULL;
-    }
-    return result;
-}
 
 /* Allocate space for a new board. */
 static Board *

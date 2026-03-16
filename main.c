@@ -76,6 +76,8 @@ StateInfo GlobalState = {
     FALSE,              /* check_tags */
     FALSE,              /* add_ECO (-e) */
     FALSE,              /* parsing_ECO_file (-e) */
+    FALSE,              /* --addelotags */
+    FALSE,              /* --addfideidtags */
     DONT_DIVIDE,        /* ECO_level (-E) */
     SAN,                /* output_format (-W) */
     MAX_LINE_LENGTH,    /* max_line_length (-w) */

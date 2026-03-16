@@ -19,8 +19,10 @@
  *  https://www.cs.kent.ac.uk/people/staff/djb/
  *
  */
+#ifndef TYPEDEF_H
+#define TYPEDEF_H
 
-        /* Type definitions required by multiple files. */
+    /* Type definitions required by multiple files. */
 
     /* Define a type to represent different output formats.
      * Currently represented are:
@@ -37,9 +39,6 @@
      *     XOLALG: As XLALG but with O-O and O-O-O for castling moves.
      *     UCI: UCI-compatible format - actually LALG.
      */
-#ifndef TYPEDEF_H
-#define TYPEDEF_H
-
 typedef enum { SOURCE, SAN, EPD, FEN, CM, LALG, HALG, ELALG, XLALG, XOLALG, UCI } OutputFormat;
 
     /* Define a type to specify whether a move gives check, checkmate,
@@ -136,7 +135,7 @@ typedef struct move {
     Variation *Variants;
     /* Pointers to the previous and next move.
      * The extraction program does not need the prev field, but
-     * interfaces that might need it.
+     * interfaces might need it.
      * For instance, a game viewer would need to be able to move backwards
      * and forwards through a game.
      */
@@ -166,7 +165,7 @@ typedef struct {
     Boolean moves_checked;
     /* Whether the moves are ok, or not. */
     Boolean moves_ok;
-    /* if !moves_ok, the first ply at which an error was found.
+    /* if ! moves_ok, the first ply at which an error was found.
      * 0 => no error found.
      */
     int error_ply;
@@ -260,6 +259,10 @@ typedef struct {
     Boolean add_ECO;
     /* Whether an ECO file is currently being parsed. */
     Boolean parsing_ECO_file;
+    /* Whether to add Elo tags. */
+    Boolean add_Elo_tags;
+    /* Whether to add FIDE ID tags. */
+    Boolean add_ID_tags;
     
     /* Which level to divide the output. */
     EcoDivision ECO_level;

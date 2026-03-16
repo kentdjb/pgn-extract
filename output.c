@@ -35,6 +35,7 @@
 #include "apply.h"
 #include "output.h"
 #include "mymalloc.h"
+#include "playerhashtable.h"
 
 
 /* Functions for outputting games in the required format. */
@@ -83,6 +84,8 @@ static void print_FEN_move_list(Game *current_game, FILE *outputfile,
         Board *final_board);
 static const char *build_FEN_comment(const Board *board);
 static void add_hashcode_tag(const Game *game);
+static void add_elo_tags(const Game *game);
+static void add_fide_id_tags(const Game *game);
 static unsigned count_single_move_ply(const Move *move_details, Boolean count_variations);
 static unsigned count_move_list_ply(Move *move_list, Boolean count_variations);
 static void print_space_separated_str(FILE *outputfile, const char *str);
@@ -1306,6 +1309,12 @@ format_game(Game *current_game, FILE *outputfile)
     line_length = 0;
     
     if (final_board != NULL) {
+        if (GlobalState.add_Elo_tags) {
+            add_elo_tags(current_game);
+        }
+        if (GlobalState.add_ID_tags) {
+            add_fide_id_tags(current_game);
+        }
         if (GlobalState.output_plycount) {
             add_plycount(current_game);
         }
@@ -1778,6 +1787,35 @@ static void add_hashcode_tag(const Game *game)
         (void) free(game->tags[HASHCODE_TAG]);
     }
     game->tags[HASHCODE_TAG] = copy_string(formatted_code);
+}
+
+/* Add player info to the tags, if available.
+ * info_type is PLAYER_RATING or PLAYER_ID.
+ * tag is the tag to set/replace.
+ */
+static void add_player_tag(char**game_tags, const char *player_name, player_info info_type, int tag) {
+    if (player_name != NULL && *player_name != '\0') {
+        const char *tag_str = get_player_info(player_name, info_type);
+        if (tag_str != NULL) {
+            if (game_tags[tag] != NULL) {
+                (void) free(game_tags[tag]);
+            }
+            game_tags[tag] = copy_string(tag_str);
+        }
+    }
+
+}
+
+/* Add WHITE/BLACK_ELO_TAG to the tags, if available. */
+static void add_elo_tags(const Game *game) {
+    add_player_tag(game->tags, game->tags[WHITE_TAG], PLAYER_RATING, WHITE_ELO_TAG);
+    add_player_tag(game->tags, game->tags[BLACK_TAG], PLAYER_RATING, BLACK_ELO_TAG);
+}
+
+/* Add WHITE/BLACK_FIDE_ID_TAG to the tags, if available. */
+static void add_fide_id_tags(const Game *game) {
+    add_player_tag(game->tags, game->tags[WHITE_TAG], PLAYER_ID, WHITE_FIDE_ID_TAG);
+    add_player_tag(game->tags, game->tags[BLACK_TAG], PLAYER_ID, BLACK_FIDE_ID_TAG);
 }
 
 /* Determine how many characters needed to format the given number.

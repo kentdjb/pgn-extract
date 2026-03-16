@@ -21,7 +21,7 @@
 
 OBJS=grammar.o lex.o map.o decode.o moves.o lists.o apply.o output.o eco.o \
 	lines.o end.o main.o hashing.o argsfile.o mymalloc.o fenmatcher.o \
-	taglines.o zobrist.o
+	taglines.o zobrist.o csvreader.o playerhashtable.o
 DEBUGINFO=-g
 
 # These flags are particularly severe on checking warnings.
@@ -71,8 +71,11 @@ apply.o :  apply.c defs.h lex.h grammar.h typedef.h map.h bool.h apply.h taglist
 
 argsfile.o : argsfile.c argsfile.h bool.h defs.h typedef.h lines.h \
 		taglist.h tokens.h lex.h taglines.h moves.h eco.h apply.h output.h \
-		lists.h mymalloc.h fenmatcher.h
+		lists.h mymalloc.h fenmatcher.h playerhashtable.h
 	$(CC) $(CFLAGS) argsfile.c
+
+csvreader.o : csvreader.c csvreader.h mymalloc.h bool.h defs.h typedef.h
+	$(CC) $(CFLAGS) csvreader.c
 
 decode.o : decode.c defs.h typedef.h taglist.h lex.h bool.h decode.h lists.h \
             tokens.h mymalloc.h
@@ -85,6 +88,10 @@ eco.o :  eco.c defs.h lex.h typedef.h map.h bool.h eco.h taglist.h apply.h \
 end.o : end.c end.h bool.h defs.h typedef.h lines.h tokens.h lex.h mymalloc.h \
         apply.h grammar.h
 	$(CC) $(CFLAGS) end.c
+
+fenmatcher.o : fenmatcher.c grammar.h apply.h bool.h defs.h fenmatcher.h mymalloc.h\
+               typedef.h end.h
+	$(CC) $(CFLAGS) fenmatcher.c
 
 grammar.o : grammar.c bool.h defs.h typedef.h lex.h taglist.h map.h lists.h\
 	    moves.h apply.h output.h tokens.h eco.h end.h grammar.h hashing.h \
@@ -119,13 +126,12 @@ moves.o :  moves.c defs.h typedef.h lex.h bool.h map.h lists.h moves.h apply.h\
 	   lines.h taglist.h mymalloc.h fenmatcher.h end.h
 	$(CC) $(CFLAGS) moves.c
 
-fenmatcher.o : fenmatcher.c grammar.h apply.h bool.h defs.h fenmatcher.h mymalloc.h\
-               typedef.h end.h
-	$(CC) $(CFLAGS) fenmatcher.c
-
 output.o :  output.c output.h taglist.h bool.h typedef.h defs.h lex.h grammar.h\
-	    apply.h mymalloc.h
+	    apply.h mymalloc.h playerhashtable.h
 	$(CC) $(CFLAGS) output.c
+
+playerhashtable.o : playerhashtable.c playerhashtable.h bool.h csvreader.h defs.h mymalloc.h typedef.h
+	$(CC) $(CFLAGS) playerhashtable.c
 
 taglines.o : taglines.c bool.h defs.h typedef.h tokens.h taglist.h lex.h lines.h \
              lists.h moves.h output.h taglines.h

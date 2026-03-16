@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "mymalloc.h"
 
 /* Allocate the required space or abort the program. */
@@ -47,6 +48,24 @@ realloc_or_die(void *space, size_t nbytes)
     if (result == NULL) {
         perror("realloc or die");
         abort();
+    }
+    return result;
+}
+
+
+/* Return a fresh copy of the given string. */
+char *
+copy_string(const char *str)
+{
+    char *result;
+    if(str != NULL) {
+        size_t len = strlen(str);
+
+        result = (char *) malloc_or_die(len + 1);
+        strcpy(result, str);
+    }
+    else {
+        result = NULL;
     }
     return result;
 }

@@ -121,6 +121,7 @@ init_list_of_known_tags(void)
     TagList[ANNOTATOR_TAG] = "Annotator";
     TagList[BLACK_TAG] = "Black";
     TagList[BLACK_ELO_TAG] = "BlackElo";
+    TagList[BLACK_FIDE_ID_TAG] = "BlackFideId";
     TagList[BLACK_NA_TAG] = "BlackNA";
     TagList[BLACK_TITLE_TAG] = "BlackTitle";
     TagList[BLACK_TYPE_TAG] = "BlackType";
@@ -162,6 +163,7 @@ init_list_of_known_tags(void)
     TagList[VARIATION_TAG] = "Variation";
     TagList[WHITE_TAG] = "White";
     TagList[WHITE_ELO_TAG] = "WhiteElo";
+    TagList[WHITE_FIDE_ID_TAG] = "WhiteFideId";
     TagList[WHITE_NA_TAG] = "WhiteNA";
     TagList[WHITE_TITLE_TAG] = "WhiteTitle";
     TagList[WHITE_TYPE_TAG] = "WhiteType";

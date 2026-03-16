@@ -40,8 +40,9 @@
 #include "lists.h"
 #include "mymalloc.h"
 #include "fenmatcher.h"
+#include "playerhashtable.h"
 
-#define CURRENT_VERSION "v26-02"
+#define CURRENT_VERSION "v26-03"
 #define URL "https://www.cs.kent.ac.uk/people/staff/djb/pgn-extract/"
 
 /* The prefix of the arguments allowed in an argsfile.
@@ -400,7 +401,7 @@ read_args_file(const char *infile)
                             just_arg[arglen] = '\0';
                             process_long_form_argument(just_arg,
                                     skip_leading_spaces(space));
-			    (void) free((void *) just_arg);
+			                (void) free((void *) just_arg);
                         }
                         else {
                             process_long_form_argument(arg, "");
@@ -1025,7 +1026,37 @@ process_argument(char arg_letter, const char *associated_value)
 int
 process_long_form_argument(const char *argument, const char *associated_value)
 {
-    if (stringcompare(argument, "addfencastling") == 0) {
+    if (stringcompare(argument, "addelotags") == 0) {
+        if (*associated_value == '\0') {
+             fprintf(GlobalState.logfile,
+                    "--%s requires a filename following it.\n", argument);
+            exit(1);
+        }
+        if (read_player_info_file(associated_value, PLAYER_RATING)) {
+            GlobalState.add_Elo_tags = TRUE;
+        }
+        else {
+            fprintf(GlobalState.logfile, "Failed to read Elo file %s\n", associated_value);
+            exit(1);
+        }
+        return 2;
+    }
+    else if (stringcompare(argument, "addfideidtags") == 0) {
+        if (*associated_value == '\0') {
+            fprintf(GlobalState.logfile,
+                   "--%s requires a filename following it.\n", argument);
+            exit(1);
+        }
+        if (read_player_info_file(associated_value, PLAYER_ID)) {
+            GlobalState.add_ID_tags = TRUE;
+        }
+        else {
+            fprintf(GlobalState.logfile, "Failed to read Player ID file %s\n", associated_value);
+            exit(1);
+        }
+        return 2;
+    }
+    else if (stringcompare(argument, "addfencastling") == 0) {
         GlobalState.add_fen_castling = TRUE;
         return 1;
     }
@@ -1087,7 +1118,7 @@ process_long_form_argument(const char *argument, const char *associated_value)
     }
     else if (stringcompare(argument, "detag") == 0) {
         /* Save the tag to be dropped. */
-        if (associated_value != NULL) {
+        if (*associated_value != '\0') {
             suppress_tag(associated_value);
         }
         else {
@@ -1099,7 +1130,7 @@ process_long_form_argument(const char *argument, const char *associated_value)
     }
     else if (stringcompare(argument, "dropbefore") == 0) {
         /* Save the comment string to be matched. */
-        if (associated_value != NULL) {
+        if (*associated_value != '\0') {
             GlobalState.drop_comment_pattern = copy_string(associated_value);
         }
         else {
@@ -1286,7 +1317,7 @@ process_long_form_argument(const char *argument, const char *associated_value)
     }
     else if (stringcompare(argument, "linenumbers") == 0) {
         /* Save the marker string to be output. */
-        if (associated_value != NULL) {
+        if (*associated_value != '\0') {
             GlobalState.line_number_marker = copy_string(associated_value);
         }
         else {
@@ -1678,7 +1709,7 @@ process_long_form_argument(const char *argument, const char *associated_value)
     else if (stringcompare(argument, "splitvariants") == 0) {
         if(GlobalState.keep_variations) {
             GlobalState.split_variants = TRUE;
-            if(associated_value != NULL) {
+            if(*associated_value != '\0') {
                 unsigned limit;
                 if(sscanf(associated_value, "%u", &limit) == 1) {
                     GlobalState.split_depth_limit = limit;
@@ -1717,7 +1748,7 @@ process_long_form_argument(const char *argument, const char *associated_value)
         return 1;
     }
     else if (stringcompare(argument, "startply") == 0) {
-        if(associated_value != NULL) {
+        if(*associated_value != '\0') {
             int limit;
             if(sscanf(associated_value, "%d", &limit) == 1) {
                 if(limit >= 1) {

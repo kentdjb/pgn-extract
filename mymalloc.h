@@ -22,9 +22,9 @@
 #ifndef MYMALLOC_H
 #define MYMALLOC_H
 
+char *copy_string(const char *str);
 void *malloc_or_die(size_t nbytes);
 void *realloc_or_die(void *space,size_t nbytes);
-char *copy_string(const char *str);
 
 #endif	// MYMALLOC_H
 
