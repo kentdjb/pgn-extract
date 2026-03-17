@@ -1,0 +1,282 @@
+/*
+*  Program: pgn-extract: a Portable Game Notation (PGN) extractor.
+ *  Copyright (C) 1994-2026 David Barnes
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 1, or (at your option)
+ *  any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  David Barnes may be contacted as D.J.Barnes@kent.ac.uk
+ *  https://www.cs.kent.ac.uk/people/staff/djb/
+ *
+ */
+
+#include <stdlib.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdio.h>
+#include "bool.h"
+#include "playerhashtable.h"
+#include "mymalloc.h"
+#include "csvreader.h"
+#include "defs.h"
+#include "typedef.h"
+
+typedef struct HashNode {
+    void *key;
+    void *value;
+    struct HashNode *next;
+} HashNode;
+
+typedef struct HashTable {
+    size_t size;
+    HashNode **buckets;
+
+    size_t (*hash_func)(const void *key);
+    int (*compare_func)(const void *a, const void *b);
+    void (*free_func)(void *key, void *value);
+} HashTable;
+
+/* The data stored in the hash table. */
+typedef struct player_data {
+    char *name;
+    char *id;
+    char *rating;
+} player_data;
+
+static HashTable *player_info_table = NULL;
+
+static HashTable *create_hash_table(size_t size);
+static void ht_insert(HashTable *table, void *key, void *value);
+static void *ht_search(const HashTable *table, const void *key);
+static void ht_delete(HashTable *table, void *key);
+static void ht_destroy(HashTable *table);
+
+static void enter_player_info(const CSVData * csv_data, player_info info_type);
+
+#define MIN_TABLE_SIZE 1021
+
+/* Look up the player_name in the player data and return the given info
+ * if available. Return NULL if there is no match or the data is not
+ * available.
+ */
+const char *get_player_info(const char *player_name, player_info info_type) {
+    player_data *result = ht_search(player_info_table, player_name);
+    if (result != NULL) {
+        switch (info_type) {
+            case PLAYER_ID:
+                return result->id;
+            case PLAYER_RATING:
+                return result->rating;
+            default:
+                fprintf(GlobalState.logfile, "Internal error: unrecognised player_info: %d", info_type);
+                exit(1);
+        }
+    }
+    else {
+        return NULL;
+    }
+}
+
+/* Read a tab-separated file of player data and store it in a hash table.
+ * Return TRUE if the data was read, FALSE otherwise.
+ */
+Boolean read_player_info_file(const char *filename, player_info info_type) {
+    CSVData *csv_data = read_csv(filename);
+    if (csv_data == NULL) {
+        return FALSE;
+    }
+    if (player_info_table == NULL) {
+        size_t table_size = 2 * csv_data->row_count;
+        if (table_size < MIN_TABLE_SIZE) {
+            table_size = MIN_TABLE_SIZE;
+        }
+        else if (table_size % 2 == 0) {
+            table_size++;
+        }
+        player_info_table = create_hash_table(table_size);
+    }
+    else {
+        /* @@@ Consider resizing if the current size is too small. */
+    }
+    enter_player_info(csv_data, info_type);
+    return TRUE;
+}
+
+/* Enter the csv_data into the given hash table.
+ * The info_type specifies whether it is a player's ID or RATING.
+ */
+static void enter_player_info(const CSVData * csv_data, player_info info_type) {
+    for (size_t row = 0; row < csv_data->row_count; row++) {
+        if (csv_data->col_counts[row] == 2) {
+            char **row_data = csv_data->rows[row];
+            char *player_name = row_data[0];
+            char *info_field = row_data[1];
+
+            player_data *data = ht_search(player_info_table, player_name);
+            if (data == NULL) {
+                /* Create a new entry for the player. */
+                data = (player_data *) malloc_or_die(sizeof(*data));
+                data->name = copy_string(player_name);
+                data->id = NULL;
+                data->rating = NULL;
+                ht_insert(player_info_table, data->name, data);
+            }
+            if (info_type == PLAYER_RATING) {
+                data->rating = copy_string(info_field);
+            }
+            else if (info_type == PLAYER_ID) {
+                data->id = copy_string(info_field);
+            }
+            else {
+                fprintf(GlobalState.logfile, "Unknown player info type %d\n", info_type);
+                exit(1);
+            }
+        }
+    }
+}
+
+/* Generic hash table functionality.
+ * Source generated by ChatGPT.
+ */
+static HashTable *ht_create(size_t size,
+                            size_t (*hash_func)(const void *),
+                            int (*compare_func)(const void *, const void *),
+                            void (*free_func)(void *, void *));
+
+/* Hash function for strings. */
+static size_t string_hash(const void *key) {
+    const char *str = (char *) key;
+    size_t hash = 5381;
+    while (*str) {
+        hash = ((hash << 5) + hash) + *str++;
+    }
+    return hash;
+}
+
+/* Comparison function for strings. */
+static int string_compare(const void *a, const void *b) {
+    return strcmp((char *) a, (char *) b);
+}
+
+/* Free the key/value pair. */
+static void free_pair(void *key, void *value) {
+    free(key);
+    free(value);
+}
+
+/* Create a node for the key/value pair. */
+static HashNode *create_node(void *key, void *value) {
+    HashNode *node = (HashNode * ) malloc_or_die(sizeof(HashNode));
+    node->key = key;
+    node->value = value;
+    node->next = NULL;
+    return node;
+}
+
+/* Create a hash table of the given size.
+ * Use the given hash, comparison and free functions.
+ */
+static HashTable *ht_create(size_t size,
+                     size_t (*hash_func)(const void *),
+                     int (*compare_func)(const void *, const void *),
+                     void (*free_func)(void *, void *)) {
+    HashTable *table = malloc_or_die(sizeof(HashTable));
+    table->size = size;
+    table->hash_func = hash_func;
+    table->compare_func = compare_func;
+    table->free_func = free_func;
+    table->buckets = calloc(size, sizeof(HashNode *));
+    return table;
+}
+
+/* Create a hash table of the given size.
+ * Use the default functionality for string keys.
+ */
+static HashTable *create_hash_table(size_t size) {
+    return ht_create(size, string_hash, string_compare, free_pair);
+}
+
+/* Insert a key/value pair into the hash table. */
+static void ht_insert(HashTable *table, void *key, void *value) {
+    size_t index = table->hash_func(key) % table->size;
+    HashNode *current = table->buckets[index];
+
+    while (current) {
+        if (table->compare_func(current->key, key) == 0) {
+            current->value = value;
+            return;
+        }
+        current = current->next;
+    }
+
+    HashNode *new_node = create_node(key, value);
+    new_node->next = table->buckets[index];
+    table->buckets[index] = new_node;
+}
+
+/* Return the value associated with key, if present. */
+static void *ht_search(const HashTable *table, const void *key) {
+    size_t index = table->hash_func(key) % table->size;
+    HashNode *current = table->buckets[index];
+
+    while (current) {
+        if (table->compare_func(current->key, key) == 0) {
+            return current->value;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
+
+/* Delete the key/value pair for the given key. */
+static void ht_delete(HashTable *table, void *key) {
+    size_t index = table->hash_func(key) % table->size;
+    HashNode *current = table->buckets[index];
+    HashNode *prev = NULL;
+
+    while (current) {
+        if (table->compare_func(current->key, key) == 0) {
+            if (prev)
+                prev->next = current->next;
+            else
+                table->buckets[index] = current->next;
+
+            if (table->free_func)
+                table->free_func(current->key, current->value);
+
+            free(current);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+}
+
+/* Free the space occupied by the given hash table. */
+static void ht_destroy(HashTable *table) {
+    for (size_t i = 0; i < table->size; i++) {
+        HashNode *current = table->buckets[i];
+        while (current) {
+            HashNode *temp = current;
+            current = current->next;
+
+            if (table->free_func)
+                table->free_func(temp->key, temp->value);
+
+            free(temp);
+        }
+    }
+    free(table->buckets);
+    free(table);
+}
+
