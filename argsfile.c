@@ -195,7 +195,9 @@ usage_and_exit(void)
 
         "--50 - only output games that include fifty moves with no capture or pawn move.",
         "--75 - only output games that include seventy-five moves with no capture or pawn move.",
+        "--addelotags - add WhiteElo and BlackElo tags",
         "--addfencastling - add potentially missing castling rights to FEN tags",
+        "--addfideidtags - add WhiteFideID and BlackFideId tags",
         "--addhashcode - output a HashCode tag",
         "--addlabeltag - output a MatchLabel tag with FENPattern",
         "--addmatchtag - output a MaterialMatch tag with -z",

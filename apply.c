@@ -332,6 +332,7 @@ new_fen_board(const char *fen)
         FALSE, 0, 0,
         /* Initial hash value. */
         0ul,
+        0ul,
         /* half-move_clock */
         0,
     };

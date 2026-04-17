@@ -18,7 +18,7 @@
   <div id="banner">
 <h1><a href="https://www.cs.kent.ac.uk/~djb/pgn-extract">pgn-extract</a>:<br />
 A Portable Game Notation (PGN) Manipulator for Chess Games<br />
-Version 26-02 by
+Version 26-03 by
 <a href="https://www.cs.kent.ac.uk/~djb/">David J. Barnes</a><br />
 Now available via github: <a href="https://github.com/kentdjb/pgn-extract/">kentdjb/pgn-extract</a><br />
 </h1>
@@ -183,10 +183,11 @@ the binary working, there is <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract
         <li><a href="#fixtagstrings">Attempt to correct tag strings that are not properly terminated (--fixtagstrings)</a>
 	<li><a href="#totalplycount">Add a tag containing the total ply count (--totalplycount)</a>
         <li><a href="#nobadresults">Suppress games with inconsistent result tags (--nobadresults)</a>
+          <li><a href="#addelotags">Add WhiteElo and BlackElo tags (--addelotags)</a></li>
+          <li><a href="#addfideidtags">Add WhiteFideId and BlackFideId tags (--addfideidtags)</a></li>
       </ul>
     <li>Adding annotations to games:
       <ul>
-	<li><a href="#addhashcode">Add a tag containing a hashcode for the game (--addhashcode)</a>
 	<li><a href="#evaluation">Include a position evaluation after each move
 		    (--evaluation)</a>
 	<li><a href="#-F">Output the Forsyth-Edwards Notation (FEN) description of the final position (-F)</a>
@@ -2215,69 +2216,6 @@ pgn-extract -Rroster --xroster file.pgn
 <p>Beware that potentially significant tags such as FEN and SetUp will be suppressed
 unless explicitly included in the roster file.
 
-<h2 id="evaluation">Include a position evaluation after each move (--evaluation)</h2>
-<p>The --evaluation argument causes a comment to be appended to every move,
-which contains an evaluation of the position immediately following that
-move.
-The default evaluation is a simplified version of 
-<a href="http://en.wikipedia.org/wiki/Claude_Shannon">Shannon's board
-evaluation</a>. In this case, the evaluation is the difference between the
-value of White's position and Black's, where the value of a position is
-a weighted sum of the pieces plus a multiplier (0.1) applied to
-the number of available moves for that player.
-
-<p>I see this primarily as being a hook for people who wish to embed their
-own evaluations in the output.
-See the <code>evaluate</code> function in <code>apply.c</code> if you wish to
-write your own.
-
-<p>However, an alternative approach to annotating games with engine analysis would
-be to consider using something like my
-<a href="https://www.cs.kent.ac.uk/~djb/uci-analyser/">UCI-analyser</a> that can
-pass suitably formatted PGN files to a
-<a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html">UCI-compatible</a> engine.
-See, for instance, the section on obtaining
-<a href="https://www.cs.kent.ac.uk/~djb/uci-analyser/#annotatePGN">annotated output in PGN format</a>.
-
-<h2 id="fencomments">Include a comment with a FEN string for
-the position after each move (--fencomments)</h2>
-<p>The --fencomments argument causes a comment to be appended to every move,
-which contains a FEN string for the position immediately following that
-move. See <a href="#-F">-F</a> for adding a comment after just the
-final move.
-
-<h2 id="hashcomments">Include a polyglot hashcode comment after each move (--hashcomments)</h2>
-<p>After every move a 16-character hexadecimal polyglot hashcode is output in a comment.
-The idea is to make it easy to identify the hashcode associated with a position,
-for instance for use with hashcode searches (see <a href="#-H">-H</a>).
-
-<h2 id="nofauxep">Don't output ep squares in FEN when the capture is not possible (--nofauxep)</h2>
-<p>FEN descriptions include the square for a possible en passant capture regardless of whether there
-is actually an opposing pawn in position to make the capture.
-For instance, if there is no opposing pawn, or the capture would leave the capturing
-side in check.
-The --nofauxep flag suppresses output of the square when a capture is not possible.
-This makes it easier to compare identical FEN positions resulting from transpositions.
-
-<h2 id="markmatches">Add a game comment on positional, material, repetition and fifty-move rule
-matches (--markmatches)</h2>
-<p>Add a game comment with the text immediately following --markmatches
-after the move which causes a positional, material, repetition or fifty-move rule match.
-For instance:
-<pre>
-pgn-extract -xvars --markmatches MATCH file.pgn
-</pre>
-<p>would add the comment <em>{ MATCH }</em> after every move that
-caused a match from the positional matches specified in the <em>vars</em> file.
-<p>If the text FEN is used then this is interpreted to mean that the FEN encoding
-of the match position should be output in the comment, rather than the literal
-text FEN.
-
-<p>See <a href="#-x">-x</a> for positional matches with moves,
-<a href="#fen-t">-t</a> for positional matches with FEN patterns,
-and <a href="#-z">-z</a> for material matches.
-See also <a href="#fifty">--fifty</a> and <a href="#repetition">--repetition</a>.
-
 <h2 id="addhashcode">Add a Tag containing a hashcode for the game (--addhashcode)</h2>
 <p>Add the tag HashCode to the tags. This contains a hashcode value
 generated from the moves of the game. Identical move sequences will
@@ -2309,6 +2247,89 @@ the number of ply present in the main line of the game being output.
 the <em>total</em> number of ply present in the game being output.
 Unless <a href="#suppress">variations have been suppressed</a> this will include
 all moves in variations as well as the main line.
+
+<h2 id="addelotags">Add WhiteElo and BlackElo tags</h2>
+<p>The --addelotags option takes a filename whose contents are a tab-separated list of player names and Elo
+values, one player per line. In other words, each line of the file contains a player name, followed by a tab character,
+    followed by a numerical ID.
+Usage example:
+<pre>
+pgn-extract --addelotags eloratings.tsv games.pgn
+</pre>
+<p>Games whose White or Black tags match a player name in the file will have a WhiteElo or BlackElo tag
+added to the game's tags. If present, an existing WhiteElo or BlackElo tag will be replaced.</p>
+<h2 id="addfideidtags">Add WhiteFideId and BlackFideId tags</h2>
+<p>The --addfideidtags option takes a filename whose contents are a tab-separated list of player names and FIDE ID
+    values, one player per line. In other words, each line of the file contains a player name, followed by a tab character,
+    followed by a numerical rating.
+Usage example:
+<pre>
+pgn-extract --addfideidtags idtags.tsv games.pgn
+</pre>
+    <p>Games whose White or Black tags match a player name in the file will have a WhiteFideID or BlackFideId tag
+    added to the game's tags. If present, an existing WhiteFideID or BlackFideId tag will be replaced.</p>
+<h2 id="evaluation">Include a position evaluation after each move (--evaluation)</h2>
+<p>The --evaluation argument causes a comment to be appended to every move,
+    which contains an evaluation of the position immediately following that
+    move.
+    The default evaluation is a simplified version of
+    <a href="http://en.wikipedia.org/wiki/Claude_Shannon">Shannon's board
+        evaluation</a>. In this case, the evaluation is the difference between the
+    value of White's position and Black's, where the value of a position is
+    a weighted sum of the pieces plus a multiplier (0.1) applied to
+    the number of available moves for that player.
+
+<p>I see this primarily as being a hook for people who wish to embed their
+    own evaluations in the output.
+    See the <code>evaluate</code> function in <code>apply.c</code> if you wish to
+    write your own.
+
+<p>However, an alternative approach to annotating games with engine analysis would
+    be to consider using something like my
+    <a href="https://www.cs.kent.ac.uk/~djb/uci-analyser/">UCI-analyser</a> that can
+    pass suitably formatted PGN files to a
+    <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html">UCI-compatible</a> engine.
+    See, for instance, the section on obtaining
+    <a href="https://www.cs.kent.ac.uk/~djb/uci-analyser/#annotatePGN">annotated output in PGN format</a>.
+
+<h2 id="fencomments">Include a comment with a FEN string for
+    the position after each move (--fencomments)</h2>
+<p>The --fencomments argument causes a comment to be appended to every move,
+    which contains a FEN string for the position immediately following that
+    move. See <a href="#-F">-F</a> for adding a comment after just the
+    final move.
+
+<h2 id="hashcomments">Include a polyglot hashcode comment after each move (--hashcomments)</h2>
+<p>After every move a 16-character hexadecimal polyglot hashcode is output in a comment.
+    The idea is to make it easy to identify the hashcode associated with a position,
+    for instance for use with hashcode searches (see <a href="#-H">-H</a>).
+
+<h2 id="nofauxep">Don't output ep squares in FEN when the capture is not possible (--nofauxep)</h2>
+<p>FEN descriptions include the square for a possible en passant capture regardless of whether there
+    is actually an opposing pawn in position to make the capture.
+    For instance, if there is no opposing pawn, or the capture would leave the capturing
+    side in check.
+    The --nofauxep flag suppresses output of the square when a capture is not possible.
+    This makes it easier to compare identical FEN positions resulting from transpositions.
+
+<h2 id="markmatches">Add a game comment on positional, material, repetition and fifty-move rule
+    matches (--markmatches)</h2>
+<p>Add a game comment with the text immediately following --markmatches
+    after the move which causes a positional, material, repetition or fifty-move rule match.
+    For instance:
+<pre>
+pgn-extract -xvars --markmatches MATCH file.pgn
+</pre>
+<p>would add the comment <em>{ MATCH }</em> after every move that
+    caused a match from the positional matches specified in the <em>vars</em> file.
+<p>If the text FEN is used then this is interpreted to mean that the FEN encoding
+    of the match position should be output in the comment, rather than the literal
+    text FEN.
+
+<p>See <a href="#-x">-x</a> for positional matches with moves,
+    <a href="#fen-t">-t</a> for positional matches with FEN patterns,
+    and <a href="#-z">-z</a> for material matches.
+    See also <a href="#fifty">--fifty</a> and <a href="#repetition">--repetition</a>.
 
 <h2 id="nestedcomments">Allow nested comments (--nestedcomments)</h2>
 <p>Nested comments are not usually allowed, but some game sources include them.
@@ -2389,7 +2410,10 @@ href="#portability">Portability</a>).
     <td>bool.h</td><td>Boolean type definition.</td>
     </tr>
     <tr>
-    <td>decode.[ch]</td><td>functions for decoding the text of a move.</td>
+    <td>csvreader.[ch]</td><td>functions for reading and decoding a CSV/TSV file.</td>
+    </tr>
+    <tr>
+        <td>decode.[ch]</td><td>functions for decoding the text of a move.</td>
     </tr>
     <tr>
     <td>defs.h</td><td>definitions relating to boards.</td>
@@ -2439,6 +2463,9 @@ href="#portability">Portability</a>).
     </tr>
     <tr>
     <td>output.[ch]</td><td>functions concerned with outputting the games.</td>
+    </tr>
+    <tr>
+        <td>playerhashtable.[ch]</td><td>functions concerned with storing player data.</td>
     </tr>
     <tr>
     <td>taglines.[ch]</td><td>functions for processing files of tag search criteria.</td>
@@ -2528,7 +2555,7 @@ or via
 <a href="mailto:d.j.barnes@kent.ac.uk">d.j.barnes@kent.ac.uk</a><br />
 <a href="https://www.cs.kent.ac.uk/~djb/">https://www.cs.kent.ac.uk/~djb/</a><br />
 Date of this version: 6th March 2026<br>
-Version Number: 26-02<br>
+Version Number: 26-03<br>
 </address>
   </div>
 </div>
