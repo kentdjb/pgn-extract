@@ -2907,7 +2907,6 @@ char *get_FEN_string(const Board *board)
 static void
 build_FEN_components(const Board *board, char *epd, char *fen_suffix)
 {
-
     build_basic_EPD_string(board, epd);
     /* Format the (pseudo) half move count and the full move count. */
     size_t ix = 0;

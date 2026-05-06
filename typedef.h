@@ -418,9 +418,11 @@ typedef struct {
 
     /* The comment to use for position matches, if required. */
     const char *position_match_comment;
-    /* The comment pattern to match for FEN comments (see output_FEN_string) */
+    /* The comment pattern to match for FEN comments (see output_FEN_string). */
     const char *FEN_comment_pattern;
-    /* The comment pattern to match for dropping ply */
+    /* The output format for FEN comments. */
+    const char *FEN_comment_format;
+    /* The comment pattern to match for dropping ply. */
     const char *drop_comment_pattern;
     /* The comment marker to use for input line numbers, if required. */
     const char *line_number_marker;

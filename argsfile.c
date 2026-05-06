@@ -42,7 +42,7 @@
 #include "fenmatcher.h"
 #include "playerhashtable.h"
 
-#define CURRENT_VERSION "v26-03"
+#define CURRENT_VERSION "v26-04"
 #define URL "https://www.cs.kent.ac.uk/people/staff/djb/pgn-extract/"
 
 /* The prefix of the arguments allowed in an argsfile.
@@ -214,6 +214,7 @@ usage_and_exit(void)
         "--dropply - drop the given number of ply from the beginning of the game",
         "--duplicates - see -d",
         "--evaluation - include a position evaluation after each move",
+        "--fencommentformat - format FEN comments according to the provided format",
         "--fencomments - include a FEN string after each move",
         "--fenpattern pattern - match games reaching a position matching the given FEN pattern",
         "--fenpatterni pattern - match games reaching a position matching the given FEN pattern for either side",
@@ -1165,11 +1166,27 @@ process_long_form_argument(const char *argument, const char *associated_value)
         GlobalState.output_evaluation = TRUE;
         return 1;
     }
+    else if (stringcompare(argument, "fencommentformat") == 0) {
+        /* The format to be used when outputting FEN comments.
+         *  The assumption is that it will contain %s embedded in additional
+         *  text. E.g., "[[ %s ]]" for a Wiki-style hyperlink.
+         */
+        if(*associated_value != '\0') {
+           GlobalState.FEN_comment_format = copy_string(associated_value);
+        }
+        else {
+            fprintf(GlobalState.logfile,
+                    "--%s requires a format string following it.\n", argument);
+            exit(1);
+        }
+        return 2;
+
+    }
     else if (stringcompare(argument, "fencomments") == 0) {
         if(GlobalState.FEN_comment_pattern == NULL) {
             /* Output a FEN comment after each move. */
             GlobalState.add_FEN_comments = TRUE;
-            /* Turn off any separate setting of output_FEN_comment. */
+            /* Turn off any separate setting of output_FEN_string. */
             GlobalState.output_FEN_string = FALSE;
         }
         else {

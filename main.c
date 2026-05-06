@@ -145,6 +145,7 @@ StateInfo GlobalState = {
     EITHER_TO_MOVE,     /* whose_move */
     "MATCH",            /* position_match_comment (--markmatches) */
     (char *) NULL,      /* FEN_comment_pattern (-Fpattern) */
+    (char *) NULL, /* FEN_comment_format (--fencommentformat) */
     (char *) NULL,      /* drop_comment_pattern (--dropbefore) */
     (char *) NULL,      /* line_number_marker (--linenumbers) */
     (char *) NULL,      /* current_input_file */

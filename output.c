@@ -550,9 +550,16 @@ print_move_list(FILE *outputfile, unsigned move_number, Boolean white_to_move,
                     final_board != NULL) {
                 if(GlobalState.json_format) {
                     if(!GlobalState.add_FEN_comments) {
-                        char *fen = get_FEN_string(final_board);
-                        fprintf(outputfile, ", \"FEN\" : \"%s\" ", fen);
-                        (void) free((void *) fen);
+                        char *FEN_string = get_FEN_string(final_board);
+                        const char *FEN_format = GlobalState.FEN_comment_format;
+                        if (FEN_format == NULL) {
+                            FEN_format = "%s";
+                        }
+                        char *formatted_FEN = (char *) malloc_or_die(strlen(FEN_string) + strlen(FEN_format) + 1);
+                        sprintf(formatted_FEN, FEN_format, FEN_string);
+                        fprintf(outputfile, ", \"FEN\" : \"%s\" ", formatted_FEN);
+                        free(FEN_string);
+                        free(formatted_FEN);
                     }
                     else {
                         /* The final FEN position will have been output anyway. */
@@ -972,19 +979,26 @@ print_items_following_move(FILE *outputfile, const Move *move_details,
     }
     if(GlobalState.add_FEN_comments) {
         if(move_details->epd != NULL && move_details->fen_suffix != NULL) {
+            /* Allow for the FEN to be embedded in a different format. */
+            const char *FEN_format = GlobalState.FEN_comment_format;
+            if (FEN_format == NULL) {
+                FEN_format = "%s";
+            }
+            char *FEN_string = (char *) malloc_or_die(strlen(move_details->epd) + 1 + strlen(move_details->fen_suffix) + 1);
+            sprintf(FEN_string, "%s %s", move_details->epd, move_details->fen_suffix);
+            char *formatted_FEN = (char *) malloc_or_die(strlen(FEN_string) + strlen(FEN_format) + 1);
+            sprintf(formatted_FEN, FEN_format, FEN_string);
             if(GlobalState.json_format) {
-                fprintf(outputfile, ", \"FEN\" : \"%s %s\"", 
-                        move_details->epd,
-                        move_details->fen_suffix);
+                fprintf(outputfile, ", \"FEN\" : \"%s\"", formatted_FEN);
             }
             else {
                 start_comment(outputfile);
-                print_space_separated_str(outputfile, move_details->epd);
-                print_separator(outputfile);
-                print_space_separated_str(outputfile, move_details->fen_suffix);
+                print_space_separated_str(outputfile, formatted_FEN);
                 end_comment(outputfile);
                 something_printed = TRUE;
             }
+            free(FEN_string);
+            free(formatted_FEN);
         }
     }
     if (GlobalState.add_hashcode_comments) {
