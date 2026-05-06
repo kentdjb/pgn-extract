@@ -170,7 +170,7 @@ init_list_of_known_tags(void)
     TagList[WHITE_USCF_TAG] = "WhiteUSCF";
 }
 
-/* Extend TagList to accomodate a new tag string.
+/* Extend TagList to accommodate a new tag string.
  * Return the current value of tag_list_length as its
  * index, having incremented its value.
  */

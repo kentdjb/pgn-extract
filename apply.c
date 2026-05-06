@@ -58,6 +58,7 @@ static Boolean play_moves(Game *game_details, Board *board, Move *moves,
         Boolean mainline);
 static Boolean apply_variations(const Game *game_details, const Board *board,
         Variation *variation, Boolean check_move_validity);
+static void replace_with_FEN_comment(const Board *board, StringList *comment_to_replace);
 static Boolean rewrite_variations(const Board *board, Variation *variation);
 static Boolean rewrite_moves(Game *game, Board *board, Move *move_details);
 static void build_FEN_components(const Board *board, char *epd, char *fen_suffix);
@@ -2175,8 +2176,7 @@ rewrite_moves(Game *game, Board *board, Move *moves)
             find_matching_comment(GlobalState.FEN_comment_pattern,
                                   game->prefix_comment);
         if(comment_to_replace != NULL) {
-            (void) free((void *) comment_to_replace->str);
-            comment_to_replace->str = get_FEN_string(board);
+            replace_with_FEN_comment(board, comment_to_replace);
         }
     }
 
@@ -2227,9 +2227,7 @@ rewrite_moves(Game *game, Board *board, Move *moves)
                         find_matching_comment(GlobalState.FEN_comment_pattern,
                                               move_details->comment_list);
                     if(comment_to_replace != NULL) {
-                        /* Replace it. */
-                        (void) free((void *) comment_to_replace->str);
-                        comment_to_replace->str = get_FEN_string(board);
+                        replace_with_FEN_comment(board, comment_to_replace);
                     }
                 }
 
@@ -3132,4 +3130,19 @@ find_matching_comment(const char *comment_pattern,
     else {
         return (StringList *) NULL;
     }
+}
+
+/* Replace a matched comment with a FEN of the current position. */
+static void
+replace_with_FEN_comment(const Board *board, StringList *comment_to_replace) {
+    free((void *) comment_to_replace->str);
+    char *FEN_string = get_FEN_string(board);
+    const char *FEN_format = GlobalState.FEN_comment_format;
+    if (FEN_format == NULL) {
+        FEN_format = "%s";
+    }
+    char *formatted_FEN = (char *) malloc_or_die(strlen(FEN_string) + strlen(FEN_format) + 1);
+    sprintf(formatted_FEN, FEN_format, FEN_string);
+    comment_to_replace->str = formatted_FEN;
+    free(FEN_string);
 }

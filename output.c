@@ -548,29 +548,37 @@ print_move_list(FILE *outputfile, unsigned move_number, Boolean white_to_move,
             if (GlobalState.output_FEN_string && 
                     GlobalState.FEN_comment_pattern == NULL &&
                     final_board != NULL) {
+                char *FEN_string = get_FEN_string(final_board);
+                const char *FEN_format = GlobalState.FEN_comment_format;
+                if (FEN_format == NULL) {
+                    if(GlobalState.json_format) {
+                        FEN_format = "%s";
+                    }
+                    else {
+                        /* For consistency with the documentation, a FEN of the final position
+                         * with -F is enclosed within quote characters. This can be avoided by
+                         * using "%s" with the --fencommentformat option.
+                         */
+                        FEN_format = "\"%s\"";
+                    }
+                }
+                char *formatted_FEN = (char *) malloc_or_die(strlen(FEN_string) + strlen(FEN_format) + 1);
+                sprintf(formatted_FEN, FEN_format, FEN_string);
                 if(GlobalState.json_format) {
-                    if(!GlobalState.add_FEN_comments) {
-                        char *FEN_string = get_FEN_string(final_board);
-                        const char *FEN_format = GlobalState.FEN_comment_format;
-                        if (FEN_format == NULL) {
-                            FEN_format = "%s";
-                        }
-                        char *formatted_FEN = (char *) malloc_or_die(strlen(FEN_string) + strlen(FEN_format) + 1);
-                        sprintf(formatted_FEN, FEN_format, FEN_string);
+                    if(! GlobalState.add_FEN_comments) {
                         fprintf(outputfile, ", \"FEN\" : \"%s\" ", formatted_FEN);
-                        free(FEN_string);
-                        free(formatted_FEN);
                     }
                     else {
                         /* The final FEN position will have been output anyway. */
                     }
                 }
                 else {
-                    print_separator(outputfile);
-                    const char *comment = build_FEN_comment(final_board);
-                    print_str(outputfile, comment);
-                    (void) free((void *) comment);
+                    start_comment(outputfile);
+                    print_space_separated_str(outputfile, formatted_FEN);
+                    end_comment(outputfile);
                 }
+                free(FEN_string);
+                free(formatted_FEN);
             }
             if (GlobalState.keep_results) {
                 print_separator(outputfile);
