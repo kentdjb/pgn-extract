@@ -1423,9 +1423,7 @@ add_filename_list_from_file(FILE *fp, SourceFileType file_type)
             if (non_blank_line(line)) {
                 add_filename_to_source_list(line, file_type);
             }
-            else {
-                (void) free((void *) line);
-            }
+            free((void *) line);
             line = read_line(fp);
         }
     }

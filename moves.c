@@ -337,6 +337,7 @@ add_positional_variations_from_file(FILE *fpin)
 
     while ((line = read_line(fpin)) != NULL) {
         add_positional_variation_from_line(line);
+        free((void *) line);
     }
 }
 

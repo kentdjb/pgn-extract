@@ -265,10 +265,12 @@ check_for_odds(const Game *game)
             const char *empty_ranks = "^[^/]*/[^/]*/8/8/8/8/";
             if(regcomp(&regex, empty_ranks, 0)  == 0) {
                 if(regexec(&regex, game->tags[FEN_TAG], 0, NULL, 0) != 0) {
+                    regfree(&regex);
                     return FALSE;
                 }
             }
             else {
+                regfree(&regex);
                 return FALSE;
             }
             regfree(&regex);
@@ -1348,15 +1350,17 @@ deal_with_game(Move *move_list, unsigned long start_line, unsigned long end_line
     }
 
     /* Game is finished with, so free everything. */
-    if (GameHeader.prefix_comment != NULL) {
-        free_comment_list(GameHeader.prefix_comment);
-    }
     /* Ensure that the GameHeader's prefix comment is NULL for
-     * the next game.
+     * the next game. Any associated comments will be freed via
+     * current_game.prefix_comment.
      */
     GameHeader.prefix_comment = NULL;
 
     free_tags();
+    if (current_game.prefix_comment != NULL) {
+        free_comment_list(current_game.prefix_comment);
+        current_game.prefix_comment = NULL;
+    }
     free_move_list(current_game.moves);
     if (current_game.position_counts != NULL) {
         free_position_count_list(current_game.position_counts);
@@ -1527,6 +1531,8 @@ deal_with_ECO_line(Move *move_list)
     if(final_position != NULL) {
         /* Store the ECO code in the appropriate hash location. */
         save_eco_details(&current_game, final_position, number_of_half_moves);
+        free_board(final_position);
+        final_position = NULL;
     }
 
     /* Game is finished with, so free everything. */
