@@ -1,5 +1,5 @@
 # Makefile to run a battery of tests of the basic functionality of pgn-extract.
-# Copyright (C) David J. Barnes, 2013-2025
+# Copyright (C) David J. Barnes, 2013-2026
 #
 # Each test is run and then, where relevant, a comparison is made between
 # the output files generated in the current directory and the 'oracle'
@@ -19,7 +19,7 @@ CMP=cmp
 #RM=del
 #CMP=diff
 
-PGN_EXTRACT=..$(SEP)pgn-extract
+PGN_EXTRACT=..$(SEP)build$(SEP)bin$(SEP)pgn-extract
 # Use for memory checking if valgrind is installed.
 #PGN_EXTRACT=valgrind --dsymutil=yes ..$(SEP)pgn-extract
 #PGN_EXTRACT=valgrind --dsymutil=yes --leak-check=full ..$(SEP)pgn-extract
