@@ -4,7 +4,6 @@ OBJ_DIR   := $(BUILD_DIR)/obj
 BIN_DIR   := $(BUILD_DIR)/bin
 TARGET    := $(BIN_DIR)/pgn-extract
 
-# Keep your existing source list explicit (recommended)
 SRCS := grammar.c lex.c map.c decode.c moves.c lists.c apply.c output.c eco.c \
         lines.c end.c main.c hashing.c argsfile.c mymalloc.c fenmatcher.c \
         taglines.c zobrist.c csvreader.c playerhashtable.c
@@ -12,7 +11,6 @@ SRCS := grammar.c lex.c map.c decode.c moves.c lists.c apply.c output.c eco.c \
 OBJS := $(SRCS:%.c=$(OBJ_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-# Existing flags (remove -c from CFLAGS if you prefer, either works)
 DEBUGINFO=-g
 OPTIMISE=-O3
 CC=gcc
