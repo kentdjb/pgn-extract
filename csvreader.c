@@ -51,7 +51,7 @@ static char **split_line(char *line, int *count) {
             capacity *= 2;
             fields = realloc_or_die(fields, capacity * sizeof(char*));
         }
-        fields[*count] = strdup(token);
+        fields[*count] = copy_string(token);
         (*count)++;
         token = strtok(NULL, separator);
     }
@@ -85,7 +85,7 @@ CSVData *read_csv(const char *filename) {
         }
 
         int col_count;
-        char *line_copy = strdup(line);
+        char *line_copy = copy_string(line);
         char **fields = split_line(line_copy, &col_count);
 
         data->rows[data->row_count] = fields;
