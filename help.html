@@ -191,9 +191,11 @@ the binary working, there is <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract
 	<li><a href="#evaluation">Include a position evaluation after each move
 		    (--evaluation)</a>
 	<li><a href="#-F">Output the Forsyth-Edwards Notation (FEN) description of the final position (-F)</a>
-	<li><a href="#fencomments">Include a FEN comment after each move
+          <li><a href="#fencommentformat">Format for FEN comments
+              (--fencommentformat)</a>
+          <li><a href="#fencomments">Include a FEN comment after each move
 		    (--fencomments)</a>
-	<li><a href="#hashcomments">Include a polyglot hashcode comment after each move
+          <li><a href="#hashcomments">Include a polyglot hashcode comment after each move
 		    (--hashcomments)</a>
 	<li><a href="#markmatches">Add a game comment for positional
 	and material matches (--markmatches)</a>
@@ -208,6 +210,7 @@ the binary working, there is <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract
             <li><a href="#nofauxep">ep squares in FEN when the capture is not possible</a>
             <li><a href="#fencomments">Include a FEN comment after each move
                         (--fencomments)</a>
+            <li><a href="#fencommentformat">Format for FEN comments (--fencommentformat)</a>).
             <li><a href="#addfencastling">Add potentially missing castling rights to FEN tags (--addfencastling)</a>
         </ul>
     <li>Other output features:
@@ -349,6 +352,7 @@ of this page before attempting to use pgn-extract in earnest.
       <li>--duplicates - file to write duplicate games to
             (see <a href="#duplicates">-a</a>).
       <li>--evaluation - include a position evaluation after each move.
+        <li>--fencommentformat - Format for FEN comments (see <a href="#-F">-F</a> and <a href="#fencomments">--fencommentformat</a>).
       <li>--fencomments - include a FEN comment after each move.
       <li>--fenpattern pattern - match games containing the given FEN pattern.
       <li>--fenpatterni pattern - match games containing the given FEN pattern for either side.
@@ -1979,6 +1983,8 @@ Bxc3 8. bxc3 c5 *
 </pre>
 <p>The text immediately following -F is arbitrary but an exact, complete match
 is required to output a FEN string.
+<p>See <a href="#fencommentformat">--fencommentformat</a> for the option to embed the FEN string
+    within a particular context.
 <p>See <a href="#fencomments">--fencomments</a> for the option to add
 a FEN comment after every move, including the final one.
 
@@ -2299,6 +2305,15 @@ pgn-extract --addfideidtags idtags.tsv games.pgn
     move. See <a href="#-F">-F</a> for adding a comment after just the
     final move.
 
+<h2 id="fencommentformat">Format for FEN strings (--fencommentformat)</h2>
+<p>Both <a href="#-F">-F</a> and <a href="#fencomments">--fencomments</a> allow for the FEN of
+a position to be embedded in a comment. By default, only the FEN string will be placed in the
+comment, but the --fencommenformat option allows for the FEN string to be embedded within an alternative
+textual context. The --fencommentformat argument must be followed by a C-style format string that includes a single
+embedded "&#37;s" format specifier.
+For instance, the following argument would embed the FEN in Wiki-style markup for a hyperlink:
+<pre>pgn-extract --fencomments --fencommentformat "[[&#37;s]]" --output out.pgn games.pgn</pre>
+
 <h2 id="hashcomments">Include a polyglot hashcode comment after each move (--hashcomments)</h2>
 <p>After every move a 16-character hexadecimal polyglot hashcode is output in a comment.
     The idea is to make it easy to identify the hashcode associated with a position,
@@ -2554,8 +2569,8 @@ or via
 <p>Copyright (C) 1994-2026 David J. Barnes<br />
 <a href="mailto:d.j.barnes@kent.ac.uk">d.j.barnes@kent.ac.uk</a><br />
 <a href="https://www.cs.kent.ac.uk/~djb/">https://www.cs.kent.ac.uk/~djb/</a><br />
-Date of this version: 6th March 2026<br>
-Version Number: 26-03<br>
+Date of this version: 8th May 2026<br>
+Version Number: 26-04<br>
 </address>
   </div>
 </div>

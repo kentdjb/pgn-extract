@@ -214,7 +214,7 @@ usage_and_exit(void)
         "--dropply - drop the given number of ply from the beginning of the game",
         "--duplicates - see -d",
         "--evaluation - include a position evaluation after each move",
-        "--fencommentformat - format FEN comments according to the provided format",
+        "--fencommentformat - format for FEN comments",
         "--fencomments - include a FEN string after each move",
         "--fenpattern pattern - match games reaching a position matching the given FEN pattern",
         "--fenpatterni pattern - match games reaching a position matching the given FEN pattern for either side",
