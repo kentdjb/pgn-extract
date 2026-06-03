@@ -7,6 +7,21 @@
   <description>A Portable Game Notation (PGN) manipulator</description>
 
   <item>
+    <title>Version 26-04</title>
+    <link>https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-26-04.tgz</link>
+    <description>C source code for version 26-04.
+    64-bit windows binary available from the home page.
+    New in this version:
+    --piececount, --addelotags, --addplayeridtags and --fencommentformat.
+    Fixed a bug with -Wxolalg format. ECO classification changed slightly to take into account which player
+    is to move.
+    Added insufficient material to --fixresulttags.
+    </description>
+    <guid isPermaLink="false">pgn-extract-26-04-announce</guid>
+    <pubDate>03 Jun 2026 20:00:00 GMT</pubDate>
+  </item>
+
+  <item>
     <title>Version 25-01</title>
     <link>https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-25-01.tgz</link>
     <description>C source code for version 25-01.

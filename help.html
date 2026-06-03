@@ -18,7 +18,7 @@
   <div id="banner">
 <h1><a href="https://www.cs.kent.ac.uk/~djb/pgn-extract">pgn-extract</a>:<br />
 A Portable Game Notation (PGN) Manipulator for Chess Games<br />
-Version 26-03 by
+Version 26-04 by
 <a href="https://www.cs.kent.ac.uk/~djb/">David J. Barnes</a><br />
 Now available via github: <a href="https://github.com/kentdjb/pgn-extract/">kentdjb/pgn-extract</a><br />
 </h1>
@@ -2310,9 +2310,11 @@ pgn-extract --addfideidtags idtags.tsv games.pgn
 a position to be embedded in a comment. By default, only the FEN string will be placed in the
 comment, but the --fencommenformat option allows for the FEN string to be embedded within an alternative
 textual context. The --fencommentformat argument must be followed by a C-style format string that includes a single
-embedded "&#37;s" format specifier.
-For instance, the following argument would embed the FEN in Wiki-style markup for a hyperlink:
-<pre>pgn-extract --fencomments --fencommentformat "[[&#37;s]]" --output out.pgn games.pgn</pre>
+embedded "&#37;s" format specifier. The "&#37;s" will be replaced by the FEN string.
+<p>For instance, the following argument would embed the FEN in Wiki-style markup for a hyperlink:
+<pre>pgn-extract -F --fencommentformat "[[&#37;s]]" --output out.pgn games.pgn</pre>
+<p>might result in the following at the end of a game:
+<pre>56. Kh3 Bxe4 { [[3N3k/3R4/7p/2pN4/4b2p/7K/6P1/2r2r2 w - - 0 57]] } 0-1</pre>
 
 <h2 id="hashcomments">Include a polyglot hashcode comment after each move (--hashcomments)</h2>
 <p>After every move a 16-character hexadecimal polyglot hashcode is output in a comment.

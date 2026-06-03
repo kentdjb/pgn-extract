@@ -19,7 +19,7 @@
   <div id="banner-wrapper">
     <div id="banner">
 <h1 align="center">pgn-extract:<br />A Portable Game Notation (PGN) Manipulator for Chess Games<br />
-Version 25-01 by <a href="https://www.cs.kent.ac.uk/~djb/">David J. Barnes</a>
+Version 26-04 by <a href="https://www.cs.kent.ac.uk/~djb/">David J. Barnes</a>
 (<a href="https://twitter.com/kentdjb">@kentdjb</a>)<br />
 Now available via github: <a href="https://github.com/kentdjb/pgn-extract/">kentdjb/pgn-extract</a><br />
 <a href="pgn-extract.xml">
@@ -93,21 +93,20 @@ get the full lists of arguments.
 <h2>Most recent changes</h2>
 <p>These are the main changes in this version:
 <ul>
-    <li><p>bug fix for repetition detection (--repetition);
-    <li><p>find games whether the winner is either the higher or lower rated player (--lowerratedwinner and
-    --higherratedwinner);
-    <li><p>extend -v to match move sequences anywhere in a game, not just at the start (--vanywhere);
-    <li><p>find games played at odds (--odds).
+    <li><p>Further arguments added: --piececount, --addelotags, --addplayeridtags and --fencommentformat.
+    <li><p>Fixed a bug with -Wxolalg format.
+    <li><p>ECO classification changed slightly to take into account which player is to move.
+    <li><p>Added insufficient material to --fixresulttags.
 </ul>
 
 <h2>Available Files</h2>
 <p>You can take a copy of the full source and
 documentation as either
 <a
-href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-25-01.tgz">pgn-extract-25-01.tgz</a> 
+href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-26-04.tgz">pgn-extract-26-04.tgz</a> 
 or
 <a
-href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-25-01.zip">pgn-extract-25-01.zip</a>.
+href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-26-04.zip">pgn-extract-26-04.zip</a>.
 Alternatively, a Windows
 <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract.exe">64-bit binary</a> is also available.
 </p>
@@ -121,29 +120,29 @@ Alternatively, a Windows
 
     <tr valign="top">
     <td><a
-    href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-25-01.tgz">pgn-extract-25-01.tgz</a><br>
+    href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-26-04.tgz">pgn-extract-26-04.tgz</a><br>
     <td>GZipped tar file
     of the complete source of the latest version of the program.<br>
     Includes <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/help.html">usage documentation</a>,
     Makefile for compilation and
     <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/eco.pgn">eco.pgn</a> file for ECO classification.</td>
-    <td align="right">498K bytes &nbsp;</td><td>08 Jan 2025</td>
+    <td align="right">507K bytes &nbsp;</td><td>03 June 2026</td>
     </tr>
 
     <tr valign="top">
     <td><a
-    href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-25-01.zip">pgn-extract-25-01.zip</a></td>
+    href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-26-04.zip">pgn-extract-26-04.zip</a></td>
     <td>Zipped file of the complete source of the latest version of the program.<br>
     Includes <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/help.html">usage documentation</a>, Makefile for compilation and
     <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/eco.pgn">eco.pgn</a> file for ECO classification.</td>
-    <td align="right">641K bytes &nbsp;</td><td>08 Jan 2025</td>
+    <td align="right">659K bytes &nbsp;</td><td>03 June 2026</td>
     </tr>
 
     <tr>
     <td><a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract.exe">pgn-extract.exe</a></td>
     <td>Windows 64-bit binary of the latest version of the program.</td>
     <td>2.4M bytes</td>
-    <td>08 Jan 2025</td>
+    <td>03 June 2026</td>
     </tr>
 
     <tr>
@@ -199,7 +198,7 @@ promise to undertake significant development work.
 <a href="https://www.cs.kent.ac.uk/~djb/">My home page</a> at the University of Kent.<br />
 <a href="mailto:d.j.barnes @ kent.ac.uk">d.j.barnes @ kent.ac.uk</a><br />
 <a href="https://x.com/kentdjb">@kentdjb</a><br />
-Last updated: 8th January 2025: version 25-01 released.<br />
+Last updated: 3rd June 2026: version 26-04 released.<br />
 </p>
 </address>
   </div>
