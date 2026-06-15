@@ -42,7 +42,7 @@
 #include "fenmatcher.h"
 #include "playerhashtable.h"
 
-#define CURRENT_VERSION "v26-04"
+#define CURRENT_VERSION "v26-05"
 #define URL "https://www.cs.kent.ac.uk/people/staff/djb/pgn-extract/"
 
 /* The prefix of the arguments allowed in an argsfile.

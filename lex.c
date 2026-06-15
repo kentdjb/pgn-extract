@@ -1313,11 +1313,22 @@ static size_t input_buffer_index = 0;
 static size_t input_buffer_limit = 0;
 static char input_buffer[INPUT_BUFFER_LEN];
 
-/* Fill the input buffer to its limit, if possible. */
+/* Fill the input buffer to its limit, if possible.
+ * Don't buffer interactive input.
+ */
 static void fill_input_buffer(FILE *fpin)
 {
     if(! feof(fpin)) {
-        input_buffer_limit = fread(input_buffer, sizeof(*input_buffer), INPUT_BUFFER_LEN, fpin);
+        if(isatty(fileno(fpin))) {
+            if (fgets((char *)input_buffer, INPUT_BUFFER_LEN, fpin) != NULL) {
+                input_buffer_limit = strlen((char *)input_buffer);
+            } else {
+                input_buffer_limit = 0;
+            }
+        }
+        else {
+            input_buffer_limit = fread(input_buffer, sizeof(*input_buffer), INPUT_BUFFER_LEN, fpin);
+        }
     }
     else {
         input_buffer_limit = 0;
