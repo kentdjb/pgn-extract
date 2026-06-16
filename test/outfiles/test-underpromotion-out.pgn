@@ -16,11 +16,11 @@
 [Round "?"]
 [White "?"]
 [Black "?"]
-[Result "*"]
+[Result "1/2-1/2"]
 [SetUp "1"]
 [FEN "7k/3P4/7K/8/8/8/8/8 w - - 6 55"]
 
-55. d8=N *
+55. d8=N 1/2-1/2
 
 [Event "?"]
 [Site "?"]
@@ -28,11 +28,11 @@
 [Round "?"]
 [White "?"]
 [Black "?"]
-[Result "*"]
+[Result "1/2-1/2"]
 [SetUp "1"]
 [FEN "7k/3P4/7K/8/8/8/8/8 w - - 6 55"]
 
-55. d8=B *
+55. d8=B 1/2-1/2
 
 [Event "?"]
 [Site "?"]
@@ -52,11 +52,11 @@
 [Round "?"]
 [White "?"]
 [Black "?"]
-[Result "*"]
+[Result "1/2-1/2"]
 [SetUp "1"]
 [FEN "7k/3P4/7K/8/8/8/8/8 w - - 6 55"]
 
-55. d8=N *
+55. d8=N 1/2-1/2
 
 [Event "?"]
 [Site "?"]
@@ -64,9 +64,9 @@
 [Round "?"]
 [White "?"]
 [Black "?"]
-[Result "*"]
+[Result "1/2-1/2"]
 [SetUp "1"]
 [FEN "7k/3P4/7K/8/8/8/8/8 w - - 6 55"]
 
-55. d8=B *
+55. d8=B 1/2-1/2
 
