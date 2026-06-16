@@ -273,6 +273,7 @@ usage_and_exit(void)
         "--stalemate - only output games that end in stalemate.",
         "--startply N - only start matching after N ply (N >= 1).",
         "--stopafter N - stop after matching N games (N > 0)",
+        "--summary - report the number of matched games on program exit.",
         "--suppressmatched - don't output matched games (see -n).",
         "--tagsubstr - match in any part of a tag (see -T and -t).",
         "--totalplycount - include a tag with the total number of plies in a game.",
@@ -925,10 +926,8 @@ process_argument(char arg_letter, const char *associated_value)
             GlobalState.check_only = TRUE;
             break;
         case KEEP_SILENT_ARGUMENT:
-            /* Turn off progress reporting
-             * and only report the number of games processed.
-             */
-            GlobalState.verbosity = 1;
+            /* Only report the running status. */
+            GlobalState.verbosity = RUNNING_STATUS;
             break;
         case USE_SOUNDEX_ARGUMENT:
             /* Use soundex matches for player tags. */
@@ -1724,6 +1723,11 @@ process_long_form_argument(const char *argument, const char *associated_value)
             exit(1);
         }
         return 2;
+    }
+    else if (stringcompare(argument, "summary") == 0) {
+        /* Report the summary of matched games at the end of the run. */
+        GlobalState.verbosity |= COUNT_SUMMARY;
+        return 1;
     }
     else if (stringcompare(argument, "splitvariants") == 0) {
         if(GlobalState.keep_variations) {

@@ -61,7 +61,7 @@
 StateInfo GlobalState = {
     FALSE,              /* skipping_current_game */
     FALSE,              /* check_only (-r) */
-    2,                  /* verbosity level (-s and --quiet) */
+    PER_GAME_SUMMARY | RUNNING_STATUS | COUNT_SUMMARY, /* verbosity level (-s and --quiet) */
     TRUE,               /* keep_NAGs (-N) */
     TRUE,               /* keep_comments (-C) */
     TRUE,               /* keep_variations (-V) */
@@ -445,7 +445,7 @@ main(int argc, char *argv[])
 
     /* Remove any temporary files. */
     clear_duplicate_hash_table();
-    if (!GlobalState.suppress_matched && GlobalState.verbosity > 1) {
+    if (!GlobalState.suppress_matched && (GlobalState.verbosity & COUNT_SUMMARY)) {
         fprintf(GlobalState.logfile, "%lu game%s matched out of %lu.\n",
                 GlobalState.num_games_matched,
                 GlobalState.num_games_matched == 1 ? "" : "s",

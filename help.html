@@ -18,7 +18,7 @@
   <div id="banner">
 <h1><a href="https://www.cs.kent.ac.uk/~djb/pgn-extract">pgn-extract</a>:<br />
 A Portable Game Notation (PGN) Manipulator for Chess Games<br />
-Version 26-04 by
+Version 26-05 by
 <a href="https://www.cs.kent.ac.uk/~djb/">David J. Barnes</a><br />
 Now available via github: <a href="https://github.com/kentdjb/pgn-extract/">kentdjb/pgn-extract</a><br />
 </h1>
@@ -71,7 +71,7 @@ the binary working, there is <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract
     <li><a href="#output">Where games are output (-o, --output, -a, --append)</a>
     <li><a href="#-A">Storing command-line arguments in a file (-A)</a>
     <li><a href="#-f">File of PGN files (-f)</a>
-    <li><a href="#logging">Logging (-l, -L, --quiet, -s)</a>
+    <li><a href="#logging">Logging (-l, -L, --quiet, -s, --summary)</a>
     <li>Matching:
 	<ul>
         <li>Ply criteria:
@@ -409,6 +409,7 @@ of this page before attempting to use pgn-extract in earnest.
       <li>--stalemate - only output games that end in stalemate.
       <li>--startply N - only start matching after N ply (N &gt;= 1).
       <li>--stopafter N - stop after matching N games (N &gt; 0)
+      <li>--summary - report the number of matched games on program exit.
       <li>--suppressmatched - don't output matched games (see -n).
       <li>--tagsubstr - match in any part of a tag (see <a href="#-T">-T</a> and <a href="#-t">-t</a>).
       <li>--totalplycount - include a tag with the total number of plies in a game.
@@ -528,7 +529,7 @@ than being retained as part of the game.
 <p>Null moves (--) are not normally allowed in the main line. The --allownullmoves 
 option retains games that include them and does not issue a warning.
 
-<h2 id="logging">Logging (-l, -L, --quiet, -s)</h2>
+<h2 id="logging">Logging (-l, -L, --quiet, -s, --summary)</h2>
 <p>Processing status, error messages and verbose reporting is done to the standard error
 output unless the -l or -L flag is used.
 Both are immediately followed by the name of a file to which a log
@@ -544,10 +545,13 @@ pgn-extract -Llog.txt file.pgn
         <p>The -s (silent) and --quiet options reduce the output of progress messages.
             Without either, a summary of each game's tags is printed to the log during processing, and a running count
             (modulo 1000)
-            of the number of games processed is printed to stderr. The number of games matching out of the total is
+            of the number of games processed is printed to stderr. The number of matching games out of the total is
             printed as a summary on program exit.</p>
         <p>With --quiet no progress or summary is output. </p>
         <p>With -s only the running count is printed to stderr.</p>
+        <p>Use --summary with either --quiet or -s to print the final number of matching games on program exit.
+        Note that --summary must come after --quiet or -s in the list of options to override the 'silence'
+        of those options.</p>
 
 <p>A log file will contain only error reports if the -s (silent) flag is used.
 
@@ -2574,8 +2578,8 @@ or via
 <p>Copyright © 1994-2026 David J. Barnes<br />
 <a href="mailto:d.j.barnes@kent.ac.uk">d.j.barnes@kent.ac.uk</a><br />
 <a href="https://www.cs.kent.ac.uk/~djb/">https://www.cs.kent.ac.uk/~djb/</a><br />
-Date of this version: 8th May 2026<br>
-Version Number: 26-04<br>
+Date of this version: 16th June 2026<br>
+Version Number: 26-05<br>
 </address>
   </div>
 </div>

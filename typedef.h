@@ -207,6 +207,12 @@ typedef enum {
     SETUP_TAG_OK, NO_SETUP_TAG, SETUP_TAG_ONLY,
 } SetupOutputStatus;
 
+/* Values for the verbosity level. These must be distinctive
+ * bits and the verbosity level combines them.
+ * Defined as a enum to keep the together.
+ */
+enum { PER_GAME_SUMMARY = 0x01, RUNNING_STATUS = 0x02, COUNT_SUMMARY = 0x04 };
+
 /* A type to support the storing of a list of game numbers.
  * Used to support the --selectonly and --skip arguments.
  */
@@ -225,11 +231,7 @@ typedef struct {
     Boolean skipping_current_game;
     /* Whether to check, but not write the converted output. */
     Boolean check_only;
-    /* Verbosity level.
-     * 0 -> nothing at all.
-     * 1 -> only the number of games processed.
-     * 2 -> a running commentary to logfile.
-     */
+    /* Verbosity level. Combines values given above. */
     int verbosity;
     /* Whether to keep NAGs along with moves. */
     Boolean keep_NAGs;

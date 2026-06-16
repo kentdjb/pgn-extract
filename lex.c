@@ -1520,9 +1520,8 @@ open_input(const char *infile)
     yyin = fopen(infile, "rb");
     if (yyin != NULL) {
         GlobalState.current_input_file = infile;
-        if (GlobalState.verbosity > 1) {
-            fprintf(GlobalState.logfile, "Processing %s\n",
-                    GlobalState.current_input_file);
+        if (GlobalState.verbosity & PER_GAME_SUMMARY) {
+            fprintf(GlobalState.logfile, "Processing %s\n", GlobalState.current_input_file);
         }
     }
     return yyin != NULL;
@@ -1564,9 +1563,8 @@ open_first_file(void)
         /* @@@ Should this be set?
         GlobalState.current_file_type = NORMALFILE;
          */
-        if (GlobalState.verbosity > 1) {
-            fprintf(GlobalState.logfile, "Processing %s\n",
-                    GlobalState.current_input_file);
+        if (GlobalState.verbosity & PER_GAME_SUMMARY) {
+            fprintf(GlobalState.logfile, "Processing %s\n", GlobalState.current_input_file);
         }
     }
     else if (open_input_file(0)) {

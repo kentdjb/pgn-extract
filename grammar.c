@@ -1254,8 +1254,7 @@ deal_with_game(Move *move_list, unsigned long start_line, unsigned long end_line
                     }
                 }
                 else if (GlobalState.check_only) {
-                    /* We are only checking. */
-                    if (GlobalState.verbosity > 1) {
+                    if (GlobalState.verbosity & PER_GAME_SUMMARY) {
                         /* Report progress on logfile. */
                         report_details(GlobalState.logfile);
                     }
@@ -1311,7 +1310,7 @@ deal_with_game(Move *move_list, unsigned long start_line, unsigned long end_line
                 if(! GlobalState.suppress_matched) {
                     /* Now output what we have. */
                     output_game(&current_game, outputfile);
-                    if (GlobalState.verbosity > 1) {
+                    if (GlobalState.verbosity & PER_GAME_SUMMARY) {
                         /* Report progress on logfile. */
                         report_details(GlobalState.logfile);
                     }
@@ -1366,7 +1365,7 @@ deal_with_game(Move *move_list, unsigned long start_line, unsigned long end_line
         free_position_count_list(current_game.position_counts);
         current_game.position_counts = NULL;
     }
-    if (GlobalState.verbosity != 0 && (GlobalState.num_games_processed % PROGRESS_RATE) == 0) {
+    if ((GlobalState.verbosity & RUNNING_STATUS) && (GlobalState.num_games_processed % PROGRESS_RATE) == 0) {
         fprintf(stderr, "Games: %lu\r", GlobalState.num_games_processed);
     }
 }
