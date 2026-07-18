@@ -15,6 +15,7 @@ DEBUGINFO=-g
 OPTIMISE=-O3
 CC=gcc
 LIBS=-lm
+CPPFLAGS=-D_POSIX_SOURCE
 
 CFLAGS += -pedantic -Wall -Wshadow -Wformat -Wpointer-arith \
           -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings \
@@ -25,7 +26,7 @@ CFLAGS += -pedantic -Wall -Wshadow -Wformat -Wpointer-arith \
 all: $(TARGET)
 
 $(TARGET): $(OBJS) | $(BIN_DIR)
-	$(CC) $(DEBUGINFO) $(CPPFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+	$(CC) $(DEBUGINFO) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
 
 # Generic compile rule: .c in root -> .o in build/obj
 $(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)

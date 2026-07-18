@@ -23,6 +23,7 @@ OBJS=grammar.o lex.o map.o decode.o moves.o lists.o apply.o output.o eco.o \
 	lines.o end.o main.o hashing.o argsfile.o mymalloc.o fenmatcher.o \
 	taglines.o zobrist.o csvreader.o playerhashtable.o
 DEBUGINFO=-g
+CPPFLAGS=-D_POSIX_SOURCE
 
 # These flags are particularly severe on checking warnings.
 # It may be that they are not all appropriate to your environment.
@@ -65,7 +66,7 @@ AIX_CFLAGS=-c -D_POSIX_SOURCE -D_XOPEN_SOURCE -D_ALL_SOURCE
 AIX_CC=xlc
 
 pgn-extract : $(OBJS)
-	$(CC) $(DEBUGINFO) $(CPPFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o pgn-extract
+	$(CC) $(DEBUGINFO) $(LDFLAGS) $(OBJS) $(LIBS) -o pgn-extract
 
 purify : $(OBJS)
 	purify $(CC) $(DEBUGINFO) $(OBJS) -o pgn-extract
