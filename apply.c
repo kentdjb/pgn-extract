@@ -46,8 +46,10 @@
 
 /* Define a positional search depth that should look at the
  * full length of a game.  This is used in play_moves().
+ * Its arbitrary value must be larger than the number of ply
+ * in any game considered.
  */
-#define DEFAULT_POSITIONAL_DEPTH 300
+#define DEFAULT_POSITIONAL_DEPTH 2000
 
 /* Prototypes of functions limited to this file. */
 static Boolean check_move_validity(Game *game_details, Board *board, Move *moves, Boolean mainline);
