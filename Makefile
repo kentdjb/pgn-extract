@@ -15,7 +15,7 @@ DEBUGINFO=-g
 OPTIMISE=-O3
 CC=gcc
 LIBS=-lm
-CPPFLAGS=-D_POSIX_SOURCE
+CPPFLAGS=-D_POSIX_C_SOURCE=200809L
 
 CFLAGS += -pedantic -Wall -Wshadow -Wformat -Wpointer-arith \
           -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings \
