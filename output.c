@@ -138,6 +138,9 @@ static int DefaultTagOrder[] = {
 static int *TagOrder = NULL;
 static int tag_order_space = 0;
 
+/* Ply number at which the game being output starts. */
+static unsigned game_start_ply = 1;
+
 void
 set_output_line_length(unsigned length)
 {
@@ -518,11 +521,12 @@ print_move_list(FILE *outputfile, unsigned move_number, Boolean white_to_move,
      */
     unsigned quiescense_count = 0;
 
-    /* Work out the ply depth. */
+    /* Work out the number of plies output so far. */
     plies = 2 * (move_number) - 1;
     if (!white_to_move) {
         plies++;
     }
+    plies -= game_start_ply - 1;
     if (GlobalState.output_ply_limit >= 0 &&
             plies > GlobalState.output_ply_limit) {
         keepPrinting = FALSE;
@@ -1325,6 +1329,10 @@ format_game(Game *current_game, FILE *outputfile)
     if (current_game->tags[FEN_TAG] != NULL && initial_board != NULL) {
         move_number = initial_board->move_number;
         white_to_move = initial_board->to_move == WHITE;
+    }
+    game_start_ply = 2 * move_number - 1;
+    if (!white_to_move) {
+        game_start_ply++;
     }
 
     /* Start at the beginning of a line. */
