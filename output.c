@@ -1634,14 +1634,10 @@ static void print_FEN_move_list(Game *current_game, FILE *outputfile,
     Board *board = initial_board;
     Move *move = current_game->moves;
     Boolean keepPrinting;
-    /* Work out the ply depth. */
-    int plies = 2 * (move_number) - 1;
+    int plies = 0;
 
-    if (!white_to_move) {
-        plies++;
-    }
     if (GlobalState.output_ply_limit >= 0 &&
-            plies > GlobalState.output_ply_limit) {
+            plies >= GlobalState.output_ply_limit) {
         keepPrinting = FALSE;
     }
     else {
@@ -1653,6 +1649,10 @@ static void print_FEN_move_list(Game *current_game, FILE *outputfile,
 
     while (move != NULL && keepPrinting) {
         if (move->move[0] != '\0') {
+            if (GlobalState.output_ply_limit >= 0 &&
+                    plies >= GlobalState.output_ply_limit) {
+                break;
+            }
             if(apply_move(move, board)) {
                 const char *FEN_string = get_FEN_string(board);
                 fprintf(GlobalState.outputfile, "%s\n", FEN_string);
