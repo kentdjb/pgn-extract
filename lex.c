@@ -462,9 +462,9 @@ gather_string(char *line, unsigned char *linep)
         if (!GlobalState.skipping_current_game) {
             fprintf(GlobalState.logfile, "Missing closing quote in %s\n", line);
         }
+        /* Move back to the null. */
+        linep--;
         if (len > 1) {
-            /* Move back to the null. */
-            linep--;
             str[len - 1] = '\0';
         }
     }
